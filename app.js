@@ -74,18 +74,42 @@ function removeTask(e) {
   if (e.target.parentElement.classList.contains("delete-item")) {
     if (confirm("Are you sure?")) {
       e.target.parentElement.parentElement.remove();
+      removeTaskFromLocalStorage(e.target.parentElement.parentElement);
     }
   }
+}
+
+function removeTaskFromLocalStorage(taskItem) {
+  let tasks;
+  if (localStorage.getItem("tasks") === null) {
+    tasks = [];
+  } else {
+    //transform string into object
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+  }
+
+  tasks.forEach(function (task, index) {
+    if (taskItem.textContent === task) {
+      tasks.splice(index, 1);
+      // Delete 1 task from the index
+    }
+  });
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function clearTasks(e) {
   // console.log();
   // taskList.HTML = "";   OR
-  // e.preventDefault();
+  e.preventDefault();
 
   while (taskList.firstChild) {
     taskList.removeChild(taskList.firstChild);
   }
+  clearTasksFromLocaStorage();
+}
+
+function clearTasksFromLocaStorage() {
+  localStorage.clear();
 }
 
 function filterTasks(e) {
